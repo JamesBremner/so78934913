@@ -34,9 +34,9 @@ first_job       0       0
 another_job     0       1
 yet_another     0       2
 calculate       0       3
-mark            0       4
-FTP             1       1
-analyze         1       2
-post            1       3
-report          1       4
+mark            1       2
+FTP             2       1
+analyze         2       2
+post            2       3
+report          3       2
 ```
