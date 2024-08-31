@@ -13,3 +13,30 @@ The UI is readonly, so users should not be able to re-arrange the placement of t
 - Perform a depth first search from the root
 - Each time more than one child is found, ADD rows for the new job chains
 - Each time a job chain needs to wrap around, INSERT a new row.
+
+# Input
+
+```
+first_job another_job
+another_job FTP
+another_job yet_another
+FTP analyze
+yet_another calculate
+calculate mark
+analyze post
+post report
+```
+
+# Output
+```
+jobname        row     col
+first_job       0       0
+another_job     0       1
+yet_another     0       2
+calculate       0       3
+mark            0       4
+FTP             1       1
+analyze         1       2
+post            1       3
+report          1       4
+```
