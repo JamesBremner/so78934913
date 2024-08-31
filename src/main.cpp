@@ -9,6 +9,7 @@
 #include "GraphTheory.h"
 
 raven::graph::cGraph g;
+int maxCol = 4;
 
 class cJob
 {
@@ -105,6 +106,11 @@ void visitor(int vi)
     int sibCount = visitCount(parentGraphIndex);
     auto &parent = parentJob(parentGraphIndex);
 
+    int maxRow = 0;
+    for( auto& job : vJobs )
+        if( job.myRow > maxRow )
+            maxRow = job.myRow;
+
     // calculate job position
     int row, col;
     if (siblings == 1 || sibCount == 1)
@@ -117,7 +123,20 @@ void visitor(int vi)
     {
         // another child of parent - drop down one row
         col = parent.myCol;
-        row = parent.myRow + sibCount - 1;
+        row = maxRow+1;
+    }
+    if( col == maxCol) {
+
+        //wraparound - insert a column
+
+        col = 2;
+        row++;
+
+        for( auto& job : vJobs )
+        {
+            if( job.myRow >= row )
+                job.myRow++;
+        }
     }
 
     // std::cout << g.userName(vi)
