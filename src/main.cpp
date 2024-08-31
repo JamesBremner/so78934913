@@ -107,8 +107,8 @@ void visitor(int vi)
     auto &parent = parentJob(parentGraphIndex);
 
     int maxRow = 0;
-    for( auto& job : vJobs )
-        if( job.myRow > maxRow )
+    for (auto &job : vJobs)
+        if (job.myRow > maxRow)
             maxRow = job.myRow;
 
     // calculate job position
@@ -123,18 +123,19 @@ void visitor(int vi)
     {
         // another child of parent - drop down one row
         col = parent.myCol;
-        row = maxRow+1;
+        row = maxRow + 1;
     }
-    if( col == maxCol) {
+    if (col == maxCol)
+    {
 
-        //wraparound - insert a column
+        // wraparound - insert a column
 
         col = 2;
         row++;
 
-        for( auto& job : vJobs )
+        for (auto &job : vJobs)
         {
-            if( job.myRow >= row )
+            if (job.myRow >= row)
                 job.myRow++;
         }
     }
@@ -189,19 +190,29 @@ class cGUI : public cStarterGUI
 public:
     cGUI()
         : cStarterGUI(
-              "Starter",
-              {50, 50, 1000, 500}),
-          lb(wex::maker::make<wex::label>(fm))
+              "Flowify",
+              {50, 50, 1000, 500})
     {
-        lb.move(50, 50, 100, 30);
-        lb.text("Hello World");
+
+        fm.events().draw(
+            [](PAINTSTRUCT &ps)
+            {
+                wex::shapes S(ps);
+                for (auto &job : vJobs)
+                {
+                    int x = 20 + 100 * job.myCol;
+                    int y = 20 + 50 * job.myRow;
+                    S.text(
+                        job.myName,
+                        {x,y});
+                }
+            });
 
         show();
         run();
     }
 
 private:
-    wex::label &lb;
 };
 
 main()
