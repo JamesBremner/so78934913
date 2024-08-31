@@ -83,7 +83,11 @@ int visitCount(int vi)
     return it->myChildVisitCount;
 }
 
-int parentJob(int index)
+/// @brief parent job
+/// @param index of job in graph
+/// @return reference to job in job container
+
+cJob &parentJob(int index)
 {
     auto it = find_if(
         vJobs.begin(), vJobs.end(),
@@ -91,15 +95,45 @@ int parentJob(int index)
         {
             return (j.myIndex == index);
         });
-    return it - vJobs.begin();
+    return vJobs[it - vJobs.begin()];
 }
 
+void visitor(int vi)
+{
+    int parentGraphIndex = g.adjacentIn(vi)[0];
+    int siblings = g.adjacentOut(parentGraphIndex).size();
+    int sibCount = visitCount(parentGraphIndex);
+    auto &parent = parentJob(parentGraphIndex);
+
+    // calculate job position
+    int row, col;
+    if (siblings == 1 || sibCount == 1)
+    {
+        // single child or first sibling - carry on along row
+        col = parent.myCol + 1;
+        row = parent.myRow;
+    }
+    else
+    {
+        // another child of parent - drop down one row
+        col = parent.myCol;
+        row = parent.myRow + sibCount - 1;
+    }
+
+    // std::cout << g.userName(vi)
+    //           << " parent " << g.userName(parentGraphIndex)
+    //           << " " << siblings
+    //           << " " << sibCount
+    //           << " placing " << " at " << row << "," << col
+    //           << "\n";
+
+    vJobs.emplace_back(
+        g.userName(vi), vi, row, col);
+}
 void search()
 {
-    int row, col;
-    row = col = 0;
+    // depth first search from root
     int root = findRoot();
-    // std::cout << "visit\n";
     dfs(
         g,
         root,
@@ -107,46 +141,16 @@ void search()
         {
             // runs every time a vertex is visited by DFS
 
+            // root has already been placed
             if (vi == root)
                 return true;
 
-            int parentGraphIndex = g.adjacentIn(vi)[0];
-            int siblings = g.adjacentOut(parentGraphIndex).size();
-            int sibCount = visitCount(parentGraphIndex);
+            // place job
+            visitor(vi);
 
-            int parentJobIndex = parentJob(parentGraphIndex);
-            if (siblings == 1)
-            {
-                col = vJobs[parentJobIndex].myCol + 1;
-                row = vJobs[parentJobIndex].myRow;
-            }
-            else
-            {
-                if (sibCount == 1)
-                {
-                    col = vJobs[parentJobIndex].myCol + 1;
-                    row = vJobs[parentJobIndex].myRow;
-                }
-                else
-                {
-                    col = vJobs[parentJobIndex].myCol;
-                    row = vJobs[parentJobIndex].myRow + sibCount - 1;
-                }
-            }
-
-            // std::cout << g.userName(vi)
-            //           << " parent " << g.userName(parentGraphIndex)
-            //           << " " << siblings
-            //           << " " << sibCount
-            //           << " placing " << " at " << row << "," << col
-            //           << "\n";
-
-            vJobs.emplace_back(
-                g.userName(vi), vi, row, col);
+            // keep going until all jobs placed
             return true;
         });
-
-    std::cout << "\n";
 }
 void text()
 {
