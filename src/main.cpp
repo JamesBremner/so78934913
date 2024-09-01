@@ -20,6 +20,10 @@ public:
     int myCol;
     int myChildVisitCount;
 
+    cJob()
+        : myIndex(-1)
+    {
+    }
     cJob(
         const std::string &name,
         int index,
@@ -97,6 +101,22 @@ cJob &parentJob(int index)
             return (j.myIndex == index);
         });
     return vJobs[it - vJobs.begin()];
+}
+
+cJob &parentJob(
+    const cJob &child)
+{
+    int ichild = child.myIndex;
+    auto vparent = g.adjacentIn(ichild);
+    if (!vparent.size())
+    {
+        static cJob null;
+        return null;
+    }
+    else
+    {
+        return parentJob(vparent[0]);
+    }
 }
 
 void visitor(int vi)
@@ -204,7 +224,19 @@ public:
                     int y = 20 + 50 * job.myRow;
                     S.text(
                         job.myName,
-                        {x,y});
+                        {x, y});
+                    S.rectangle( {x,y,90,40});
+
+                    auto &parent = parentJob(job);
+                    if ( parent.myRow == job.myRow)
+                    {
+                        int x1 = 110 + 100 * parent.myCol;
+                        int y1 = 30 + 50 * parent.myRow;
+                        int x2 = x1 + 10;
+                        int y2 = y1;
+                        S.line(
+                            {x1, y1, x2, y2});
+                    }
                 }
             });
 
