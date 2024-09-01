@@ -224,11 +224,12 @@ public:
         fm.events().draw(
             [](PAINTSTRUCT &ps)
             {
+                const int yScale = 80;
                 wex::shapes S(ps);
                 for (auto &job : vJobs)
                 {
                     int x = 20 + 100 * job.myCol;
-                    int y = 20 + 50 * job.myRow;
+                    int y = 20 + yScale * job.myRow;
                     S.text(
                         job.myName,
                         {x, y});
@@ -238,7 +239,7 @@ public:
                     if (parent.myRow == job.myRow)
                     {
                         int x1 = 110 + 100 * parent.myCol;
-                        int y1 = 30 + 50 * parent.myRow;
+                        int y1 = 30 + yScale * parent.myRow;
                         int x2 = x1 + 10;
                         int y2 = y1;
                         S.line(
@@ -246,19 +247,21 @@ public:
                     }
                     else if (parent.myCol == job.myCol)
                     {
+                        // second child
                         int x1 = 60 + 100 * parent.myCol;
-                        int y1 = 60 + 50 * parent.myRow;
+                        int y1 = 60 + yScale * parent.myRow;
                         int x2 = x1;
-                        int y2 = y1 + 60;
+                        int y2 = 20 + yScale * job.myRow;
                         S.line(
                             {x1, y1, x2, y2});
                     }
                     else if (parent.myCol - 1 == job.myCol)
                     {
+                        // wrap
                         int x1 = 60 + 100 * parent.myCol;
-                        int y1 = 60 + 50 * parent.myRow;
+                        int y1 = 60 + yScale * parent.myRow;
                         int x2 = 50 + 100 * job.myCol;
-                        int y2 = 20 + 50 * job.myRow;
+                        int y2 = 20 + yScale * job.myRow;
                         S.line(
                             {x1, y1, x2, y2});
                     }
