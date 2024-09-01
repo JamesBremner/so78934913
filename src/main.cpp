@@ -36,11 +36,49 @@ public:
           myChildVisitCount(0)
     {
     }
+
+    static void readfile(const std::string &fname);
+
+    static cJob &parentJob(
+        const cJob &child);
+
+    /// @brief parent job
+    /// @param index of job in graph
+    /// @return reference to job in job container
+
+    static cJob &parentJob(int index);
 };
 
 std::vector<cJob> vJobs;
 
-void readfile(const std::string &fname)
+cJob &cJob::parentJob(int index)
+{
+    auto it = find_if(
+        vJobs.begin(), vJobs.end(),
+        [&](const cJob &j) -> bool
+        {
+            return (j.myIndex == index);
+        });
+    return vJobs[it - vJobs.begin()];
+}
+
+cJob &cJob::parentJob(
+    const cJob &child)
+{
+    int ichild = child.myIndex;
+    auto vparent = g.adjacentIn(ichild);
+    if (!vparent.size())
+    {
+        static cJob null;
+        return null;
+    }
+    else
+    {
+        return parentJob(vparent[0]);
+    }
+}
+
+void cJob::readfile(const std::string &fname)
 {
     g.directed();
     std::ifstream ifs(fname);
@@ -88,43 +126,12 @@ int visitCount(int vi)
     return it->myChildVisitCount;
 }
 
-/// @brief parent job
-/// @param index of job in graph
-/// @return reference to job in job container
-
-cJob &parentJob(int index)
-{
-    auto it = find_if(
-        vJobs.begin(), vJobs.end(),
-        [&](const cJob &j) -> bool
-        {
-            return (j.myIndex == index);
-        });
-    return vJobs[it - vJobs.begin()];
-}
-
-cJob &parentJob(
-    const cJob &child)
-{
-    int ichild = child.myIndex;
-    auto vparent = g.adjacentIn(ichild);
-    if (!vparent.size())
-    {
-        static cJob null;
-        return null;
-    }
-    else
-    {
-        return parentJob(vparent[0]);
-    }
-}
-
 void visitor(int vi)
 {
     int parentGraphIndex = g.adjacentIn(vi)[0];
     int siblings = g.adjacentOut(parentGraphIndex).size();
     int sibCount = visitCount(parentGraphIndex);
-    auto &parent = parentJob(parentGraphIndex);
+    auto &parent = cJob::parentJob(parentGraphIndex);
 
     int maxRow = 0;
     for (auto &job : vJobs)
@@ -225,15 +232,33 @@ public:
                     S.text(
                         job.myName,
                         {x, y});
-                    S.rectangle( {x,y,90,40});
+                    S.rectangle({x, y, 90, 40});
 
-                    auto &parent = parentJob(job);
-                    if ( parent.myRow == job.myRow)
+                    auto &parent = cJob::parentJob(job);
+                    if (parent.myRow == job.myRow)
                     {
                         int x1 = 110 + 100 * parent.myCol;
                         int y1 = 30 + 50 * parent.myRow;
                         int x2 = x1 + 10;
                         int y2 = y1;
+                        S.line(
+                            {x1, y1, x2, y2});
+                    }
+                    else if (parent.myCol == job.myCol)
+                    {
+                        int x1 = 60 + 100 * parent.myCol;
+                        int y1 = 60 + 50 * parent.myRow;
+                        int x2 = x1;
+                        int y2 = y1 + 60;
+                        S.line(
+                            {x1, y1, x2, y2});
+                    }
+                    else if (parent.myCol - 1 == job.myCol)
+                    {
+                        int x1 = 60 + 100 * parent.myCol;
+                        int y1 = 60 + 50 * parent.myRow;
+                        int x2 = 50 + 100 * job.myCol;
+                        int y2 = 20 + 50 * job.myRow;
                         S.line(
                             {x1, y1, x2, y2});
                     }
@@ -249,7 +274,7 @@ private:
 
 main()
 {
-    readfile("../dat/dat1.txt");
+    cJob::readfile("../dat/dat1.txt");
     search();
     text();
 
