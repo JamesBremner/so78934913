@@ -25,6 +25,9 @@ yet_another calculate
 calculate mark
 analyze post
 post report
+another_job j3_1
+j3_1 j3_2
+
 ```
 
 # Output
@@ -32,15 +35,18 @@ post report
 jobname        row     col
 first_job       0       0
 another_job     0       1
-yet_another     0       2
-calculate       0       3
-mark            1       2
+j3_1            0       2
+j3_2            0       3
+yet_another     1       1
+calculate       1       2
+mark            1       3
 FTP             2       1
 analyze         2       2
 post            2       3
 report          3       2
 ```
 
-![image](https://github.com/user-attachments/assets/d8ad63a9-a0f8-4ee8-9a7c-35dd94d8617c)
+![image](https://github.com/user-attachments/assets/05112982-8b41-4ffd-8a7a-2243d7a43f8e)
+
 
 
