@@ -228,18 +228,19 @@ public:
                 wex::shapes S(ps);
                 for (auto &job : vJobs)
                 {
-                    int x = 20 + 100 * job.myCol;
-                    int y = 20 + yScale * job.myRow;
+                    int xtrbox = 15 + 100 * job.myCol;
+                    int ytrbox = 20 + yScale * job.myRow;
                     S.text(
                         job.myName,
-                        {x, y});
-                    S.rectangle({x, y, 90, 40});
+                        {xtrbox + 5, ytrbox});
+                    S.rectangle({xtrbox, ytrbox, 90, 40});
 
                     auto &parent = cJob::parentJob(job);
                     if (parent.myRow == job.myRow)
                     {
-                        int x1 = 110 + 100 * parent.myCol;
-                        int y1 = 30 + yScale * parent.myRow;
+                        // first child
+                        int x1 = 105 + 100 * parent.myCol;
+                        int y1 = 40 + yScale * parent.myRow;
                         int x2 = x1 + 10;
                         int y2 = y1;
                         S.line(
@@ -251,17 +252,63 @@ public:
                         int x1 = 60 + 100 * parent.myCol;
                         int y1 = 60 + yScale * parent.myRow;
                         int x2 = x1;
-                        int y2 = 20 + yScale * job.myRow;
+                        int y2 = y1 + 10;
+                        S.line(
+                            {x1, y1, x2, y2});
+                        x1 = x2;
+                        y1 = y2;
+                        x2 = x1 - 60;
+                        y2 = y1;
+                        S.line(
+                            {x1, y1, x2, y2});
+                        x1 = x2;
+                        y1 = y2;
+                        x2 = x1;
+                        y2 = ytrbox + 20;
+                        S.line(
+                            {x1, y1, x2, y2});
+                        x1 = x2;
+                        y1 = y2;
+                        x2 = x1 + 15;
+                        y2 = y1;
                         S.line(
                             {x1, y1, x2, y2});
                     }
                     else if (parent.myCol - 1 == job.myCol)
                     {
                         // wrap
-                        int x1 = 60 + 100 * parent.myCol;
-                        int y1 = 60 + yScale * parent.myRow;
-                        int x2 = 50 + 100 * job.myCol;
-                        int y2 = 20 + yScale * job.myRow;
+                        // int x1 = 60 + 100 * parent.myCol;
+                        // int y1 = 60 + yScale * parent.myRow;
+                        //                         int x2 = 50 + 100 * job.myCol;
+                        // int y2 = 20 + yScale * job.myRow;
+                        int x1 = 105 + 100 * parent.myCol;
+                        int y1 = 40 + yScale * parent.myRow;
+                        int x2 = x1 + 10;
+                        int y2 = y1;
+                        S.line(
+                            {x1, y1, x2, y2});
+                        x1 = x2;
+                        y1 = y2;
+                        x2 = x1;
+                        y2 = ytrbox - 10;
+                        S.line(
+                            {x1, y1, x2, y2});
+                        x1 = x2;
+                        y1 = y2;
+                        x2 = xtrbox - 10;
+                        y2 = y1;
+                        S.line(
+                            {x1, y1, x2, y2});
+                        x1 = x2;
+                        y1 = y2;
+                        x2 = x1;
+                        y2 = ytrbox + 20;
+                        S.line(
+                            {x1, y1, x2, y2});
+                        x1 = x2;
+                        y1 = y2;
+                        x2 = xtrbox;
+                        y2 = y1;
                         S.line(
                             {x1, y1, x2, y2});
                     }
@@ -277,7 +324,7 @@ private:
 
 main()
 {
-    cJob::readfile("../dat/dat1.txt");
+    cJob::readfile("../dat/dat2.txt");
     search();
     text();
 
