@@ -48,5 +48,8 @@ report          3       2
 
 ![image](https://github.com/user-attachments/assets/05112982-8b41-4ffd-8a7a-2243d7a43f8e)
 
+A more complex example gives
+
+![image](https://github.com/user-attachments/assets/1ca92a6d-56a3-4919-8c45-2540ba053cc2)
 
 
